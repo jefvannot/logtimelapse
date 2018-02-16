@@ -17,14 +17,56 @@ class PagesController < ApplicationController
 		return base.compact.reverse.join(' ')
 	end
 
-	def parse_logtimes logtimes_data
-		@months_hash = Hash.new
+
+	def parse_allinone logtimes
+		@allinone = Hash.new
 		month_base = {"Jan" => 0, "Feb" => 0, "Mar" => 0, "Apr" => 0, "May" => 0, "Jun" => 0, "Jul" => 0, "Aug" => 0, "Sep" => 0, "Oct" => 0, "Nov" => 0, "Dec" => 0}
 		month_empty = month_base.clone
 		tmp = 0
 
-		logtimes_data.push(0)
-		logtimes_data.each do |val|
+		# logtimes.push(0)
+		logtimes.each do |val|
+			# if val != 0
+				dbt = Time.parse(val['begin_at'])
+				if val['end_at'] == nil
+					fin = Time.now
+				else
+					fin = Time.parse(val['end_at'])
+				end
+			# end
+
+			key = dbt.month.to_s + " " + dbt.year.to_s
+			if @allinone[key] == nil
+				@allinone[key] = 0
+			end
+			@allinone[key] += (fin - dbt).to_i
+			# if val == 0 || (tmp != 0 and dbt and tmp != dbt.year)
+				# @allinone[tmp] = month_empty
+				# month_empty = month_base.clone
+			# end
+			# if val != 0
+			# 	tmp = dbt.year
+			# 	month_empty[month_empty.keys[dbt.month - 1]] += (fin - dbt).to_i # sum this val in the month_empty array
+			# end
+		end
+		# logtimes.pop
+
+		@allinone.each do |key, v_hash|
+			# v_hash.each do |k, v|
+				@allinone[key] = humanize v_hash
+			# end
+		end
+	end
+
+
+	def parse_yearbyyear logtimes
+		@yearbyyear = Hash.new
+		month_base = {"Jan" => 0, "Feb" => 0, "Mar" => 0, "Apr" => 0, "May" => 0, "Jun" => 0, "Jul" => 0, "Aug" => 0, "Sep" => 0, "Oct" => 0, "Nov" => 0, "Dec" => 0}
+		month_empty = month_base.clone
+		tmp = 0
+
+		logtimes.push(0)
+		logtimes.each do |val|
 			if val != 0
 				dbt = Time.parse(val['begin_at'])
 				if val['end_at'] == nil
@@ -34,7 +76,7 @@ class PagesController < ApplicationController
 				end
 			end
 			if val == 0 || (tmp != 0 and dbt and tmp != dbt.year)
-				@months_hash[tmp] = month_empty
+				@yearbyyear[tmp] = month_empty
 				month_empty = month_base.clone
 			end
 			if val != 0
@@ -42,9 +84,9 @@ class PagesController < ApplicationController
 				month_empty[month_empty.keys[dbt.month - 1]] += (fin - dbt).to_i # sum this val in the month_empty array
 			end
 		end
-		logtimes_data.pop
+		logtimes.pop
 
-		@months_hash.each do |key, v_hash|
+		@yearbyyear.each do |key, v_hash|
 			v_hash.each do |k, v|
 				v_hash[k] = humanize v
 			end
@@ -69,7 +111,8 @@ class PagesController < ApplicationController
 				i += 1
 			end	
 		end
-		parse_logtimes @logtimes_array
+		# parse_yearbyyear @logtimes_array
+		parse_allinone @logtimes_array
 	end
 
 end
