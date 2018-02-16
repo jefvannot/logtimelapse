@@ -6,6 +6,10 @@ git_source(:github) do |repo_name|
 end
 
 gem 'figaro'
+gem 'oauth2'
+
+gem 'chartkick'
+gem 'highcharts-rails'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.4'
