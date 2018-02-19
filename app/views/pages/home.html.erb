@@ -4,14 +4,39 @@
 
 <p>user info = <%= @user_info%></p>
 
-<!-- <p>logtimes_array = <%= @logtimes_array%></p> -->
-<%= line_chart @allinone, label: "heures" %>
+<p>trimestre = <%= @trimestre%></p>
+
+<%= column_chart @trimestre, library: {
+	discrete: true,
+	tooltip: {
+		pointFormat: 'log: <b>{point.y}</b>',
+		valueSuffix: 'h'
+		},
+} %>
+
+<p>allinone = <%= @allinone%></p>
+
+<%= column_chart @allinone, library: {
+	discrete: true,
+	tooltip: {
+		pointFormat: 'log: <b>{point.y}</b>',
+		valueSuffix: 'h'
+		},
+} %>
+
+<p>yearbyyear = <%= @yearbyyear%></p>
+
+
+<%= line_chart @yearbyyear.map { |k, v| {
+		name: k, 
+		data: v
+	}
+} %>
 
 
 <% if @yearbyyear %>
-	<% @yearbyyear.each do |key, v_hash| %>
-		<p>***** <%= key.to_s %> *****</p>
-	 	<%= line_chart v_hash, width: "800px" , label: "heures" %>
-	 	<%= v_hash %>
-	<% end %>
+<% @yearbyyear.each do |key, v_hash| %>
+<%= line_chart v_hash, title: key, width: "800px" , label: "heures" %>
+<%= v_hash %>
+<% end %>
 <% end %>
