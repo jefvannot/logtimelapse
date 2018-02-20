@@ -88,4 +88,8 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # pour le mailing (avec devise) en prod
+  # config.action_mailer.default_url_options = { host: 'logtimelapse.42.fr' }
+
 end
